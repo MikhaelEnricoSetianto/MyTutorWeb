@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTutor</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<header class="header">My Tutor</header>
+<body>
+    <div class="home"> 
+        <div class="formbox">
+            Welcome to My Tutor !
+            <div class="buttonbox">
+                <div id="btn"></div>
+                <button type="button" class="togglebtn" onclick="login()"> Log In</button>
+                <button type="button" class="togglebtn" onclick="signup()">Sign Up</button>
+            </div>
+            <form id="login" class="inputs">
+                <input type="text" class="inputfield" placeholder="Email"required>
+                <input type="password" class="inputfield" placeholder="Password"required>
+                <button type="submit" class="submitbtn">Log In</button>
+            </form>
+            <form id="signup" class="inputs" method="post" action="../php/registry.php">
+                <input type="text" class="inputfield" name="name" id="name" placeholder="Name"required>
+                <input type="text" class="inputfield" name="email" id="email" placeholder="Email"required>
+                <input type="password" class="inputfield" name="password" id="password" placeholder="Password"required>
+                <input type="text" class="inputfield" name="phonenumber" id="phonenumber" placeholder="Phone Number"required>
+                <input type="text" class="inputfield" name="address" id="address" placeholder="Address"required>
+                <button type="submit" class="submitbtn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var a = document.getElementById("login");
+        var b = document.getElementById("signup");
+        var c = document.getElementById("btn");
+
+        function login(){
+        a.style.left = "80px";
+        b.style.left = "430px";
+        c.style.left = "0px";
+    } 
+    
+        function signup(){
+        a.style.left = "-350px";
+        b.style.left = "80px";
+        c.style.left = "90px";
+    }    
+    </script>
+</body>
+</html>
+
