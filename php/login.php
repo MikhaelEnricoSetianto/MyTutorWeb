@@ -21,4 +21,5 @@ if (isset($_POST['submit'])) {
             echo "<script>alert('Login Failed! Please Check Your Email and/or Password!');</script>";
             echo "<script> window.location.replace('../html/index.html')</script>";
         }
+?>    
         
