@@ -17,9 +17,11 @@
                 <button type="button" class="togglebtn" onclick="login()"> Log In</button>
                 <button type="button" class="togglebtn" onclick="signup()">Sign Up</button>
             </div>
-            <form id="login" class="inputs">
-                <input type="text" class="inputfield" placeholder="Email"required>
-                <input type="password" class="inputfield" placeholder="Password"required>
+            <form id="login" class="inputs" method="post" action="../php/login.php">
+                <input type="text" class="inputfield" name="email" id="email" placeholder="Email"required>
+                <input type="password" class="inputfield" name="password" id="password" placeholder="Password"required>
+                <input class="check" name="rememberme" type="checkbox" id="remember" onclick="rememberMe()">
+                    <label>Remember Me</label>
                 <button type="submit" class="submitbtn">Log In</button>
             </form>
             <form id="signup" class="inputs" method="post" action="../php/registry.php">
