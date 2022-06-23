@@ -6,7 +6,7 @@ if (isset($_POST['submit'])) {
     die();
 }    
     include 'dbconnect.php';
-    $email = addslashes($_POST['email']);
+    $email = $_POST['email'];
     $pass_word = $_POST['password'];
     $sqllogin = "SELECT * FROM mytutor WHERE email = '$email' AND pass_word = '$pass_word'";
     $result = mysqli_query($conn, $sqllogin) or die(mysql_error());

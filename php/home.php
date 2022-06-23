@@ -1,22 +1,33 @@
 <?php
-include("dbconnect.php");
 session_start();
 if (!isset($_SESSION['email'])) {
   echo "<script>window.location.replace('../html/index.html')</script>";
 }
 
-$limit = 10;
-$page = (isset($_GET['page']) && is_numeric($_GET['page'])) ? $_GET['page'] : 1;
-$pageStart = ($page - 1) * $limit;
-$sqlSubject = "SELECT * FROM tbl_subjects LIMIT $pageStart, $limit";
-$stmt = $conn->prepare($sqlSubject);
-$stmt->execute();
-$result = $stmt->get_result();
-$sql = $conn->query("SELECT count(subject_id) AS id FROM tbl_subjects")->fetch_assoc();
-$allRecords = $sql['id'];
-$totalPages = ceil($allRecords / $limit);
-$prev = $page - 1;
-$next = $page + 1;
+include("dbconnect.php");
+if (isset($_GET['search'])) {
+  $search = $_GET['search'];
+  $sqlloadsubject = "SELECT * FROM tbl_subjects WHERE subject_name LIKE '%$search%' ORDER BY subject_id ASC";
+} 
+else {
+  $sqlloadsubject = "SELECT * FROM tbl_subjects";
+}
+
+$results_per_page = 10;
+if (isset($_GET['page'])) {
+  $page = (int)$_GET['page'];
+  $page_first_result = ($page - 1) * $results_per_page;
+} else {
+  $page = 1;
+  $page_first_result = 0;
+}
+
+$page_first_result = ($page - 1) * $results_per_page;
+$result = $conn->query($sqlloadsubject);
+$number_of_result = $result->num_rows;
+$totalPages = ceil($number_of_result / $results_per_page);
+$sqlloadsubject = $sqlloadsubject . " LIMIT $page_first_result , $results_per_page";
+$result = $conn->query($sqlloadsubject);
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +56,14 @@ $next = $page + 1;
         </div>
     </nav>
 
-
+  
+    <form method="get" action="../php/home.php">
+    <div class="input">
+      <input type="text" class="form-control rounded" name="search" id="search" placeholder="Search here" aria-label="search" aria-describedby="search-addon">
+      <button type="submit" class="btn btn-dark">Search
+      </button>
+    </div>
+    </form>
     
     <nav id="NavBar" class="navbar navbar-expand-lg bg-black fixed-top card">
       <div class="container-fluid">
@@ -78,43 +96,78 @@ $next = $page + 1;
                 <p class="card-text">
                   <?php echo $row['subject_description']; ?>
                 </p>
-                <p class="card-text text-muted">Subject Sessions :
-                  <?php echo $row['subject_sessions']; ?>
+                <p class="card-text">
+                  <?php echo $row['subject_sessions']; ?> Sessions
                 </p>
                 <p class="card-text text-warning">
                   <?php echo $row['subject_rating']; ?>
                 </p>
                 <br>
-                <p class="card-text text-success" style="bottom: 15px;">RM
+                <p class="card-text text-success">RM
                   <?php echo $row['subject_price']; ?>
                 </p>
+                <br>
+                
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#Modal">
+                  Details
+                </button>
 
+                <!-- Modal -->
+                <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                   <div class="modal-content">
+                     <div class="modal-header">
+                        <h6 class="modal-title" id="ModalLabel"><?php echo $row ['subject_name'];?>
+                        </h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                     <div class="modal-body">
+                        <p class="card-text">
+                  <?php echo $row['subject_description']; ?>
+                </p>
+                <p class="card-text">
+                  <?php echo $row['subject_sessions']; ?> Sessions
+                </p>
+                <p class="card-text text-warning">
+                  <?php echo $row['subject_rating']; ?>
+                </p>
+                <br>
+                <p class="card-text text-success">RM
+                  <?php echo $row['subject_price']; ?>
+                </p>
+                <br>
+                      </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
         </div>
       <?php
       }
       ?>
-      <nav aria-label="Page navigation mt-10">
-        <ul class="pagination justify-content-center">
-          <li><a class="page-link" href="<?php if ($page <= 1) {
-                                          echo '#';
-                                        } else {
-                                          echo " ?page=" . $prev;
-                                        } ?>">Prev</a>
-          </li>
-          <?php for ($a = 1; $a <= $totalPages; $a++) : ?>
-            <li><a class="page-link" href="home.php?page=<?= $a; ?>"><?= $a; ?></a>
-            </li>
-          <?php endfor; ?>
-          <li><a class="page-link" href="<?php if ($page >= $totalPages) {
-                                          echo '#';
-                                        } else {
-                                          echo " ?page=" . $next;
-                                        } ?>">Next</a>
-          </li>
-        </ul>
-      </nav>
+       <?php
+    $num = 1;
+    if ($page == 1) {
+        $num = 1;
+    } else if ($page == 2) {
+        $num = ($num) + 10;
+    } 
+    else {
+        $num = $page * 10 - 9;
+    }
+    echo "<div class='row'>";
+    echo "<center>";
+    for ($page = 1; $page <= $totalPages; $page++) {
+        echo '<a href = "home.php?page=' . $page . '" style=
+            "text-decoration: none">&nbsp&nbsp&nbsp' . $page .' </a>';
+    }
+
+    ?>
     </div>
   </main>
 
